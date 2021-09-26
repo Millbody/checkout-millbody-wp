@@ -1,11 +1,11 @@
 <?php 
 /*
 Plugin Name: Checkout Transparent Millbody
-Plugin URI: https://www.millbody.com/gym/wordpress/
+Plugin URI: https://www.millbody.com/personal/wordpress/
 Description: A plugin to connect to your Millbody transparent checkout
 Version: 1.0.4
 Author: jaimeflneto
-Author URI: https://www.instagram.com/jaime.neto85
+Author URI: https://www.instagram.com/jaimeflneto
 License: GPL2
 */
 $VERSION = '1.0.4';
