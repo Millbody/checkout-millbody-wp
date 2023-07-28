@@ -1598,7 +1598,6 @@ select#installments {
 	text-indent: 0px;
 	text-shadow: none;
 	display: inline-block;
-	text-align: center;
 	-webkit-appearance: textfield;
 	background-color: -internal-light-dark-color(white, black);
 	-webkit-rtl-ordering: logical;
@@ -1609,7 +1608,7 @@ select#installments {
 	border-style: inset;
 	border-color: initial;
 	border-image: initial;
-	height: 27px;
+	height: 2.5rem;
 	margin-top: 5px;
 	width: 100%;
 }
@@ -2002,12 +2001,16 @@ input[type=checkbox]:not(:disabled).tabbed:focus ~ .lever::before {
 border: none;
 border-radius: 2px;
 display: inline-block;
-height: 36px;
-line-height: 36px;
+line-height: 2.5rem;
 padding: 0 16px;
 text-transform: uppercase;
-vertical-align: middle;
 -webkit-tap-highlight-color: transparent;
+}
+
+@media screen and (max-width: 1024px) {
+	.btn, .btn-large, .btn-small, .btn-flat {
+		line-height: 2rem;
+	}
 }
 
 
@@ -2090,6 +2093,7 @@ background-color: #0279b3;
 text-decoration: none;
 color: #fff;
 background-color: #039be5;
+box-shadow: rgba(0,0,0,0.35) 1px 2px 5px 0px !important;
 text-align: center;
 letter-spacing: .5px;
 -webkit-transition: background-color .2s ease-out;
@@ -2180,6 +2184,14 @@ button.btn-floating {
 border: none;
 }
 
+.btn-primary{
+	padding-left: 50px !important;
+	padding-right: 50px !important;
+}
+
+.jp-card-container{
+	margin: inherit;
+}
 
 .fixed-action-btn {
 position: fixed;
@@ -2534,6 +2546,14 @@ display: block;
 	display: none;
 }
 
+.checkout-step{
+	border-bottom: 1px solid #CCC;
+	padding-bottom: 50px !important;
+	padding-left: 0px !important;
+	padding-right: 0px !important;
+	padding-top: 20px !important;
+}
+
 .checkout-step.enabled .btn.continue-step, .checkout-step.enabled .back-step {
 	display: inherit;
 }
@@ -2569,6 +2589,7 @@ display: block;
 	align-items: center;
 	display: flex;
 	justify-content: space-between;
+	flex-direction: column;
 }
 
 .hidden {
@@ -2638,7 +2659,6 @@ opacity: 0.7;
 	box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 3px inset !important;
 	box-sizing: border-box !important;
 	border-radius: 3px !important;
-	height: 4.5rem !important;
 	margin-top: 10px !important;
 	margin-right: 10px !important;
 	max-width: 100%;
