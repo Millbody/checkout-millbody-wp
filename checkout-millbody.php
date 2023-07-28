@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: Checkout Transparent Millbody
-Plugin URI: https://www.millbody.com/gym/wordpress/
+Plugin URI: https://www.millbody.com/personal/wordpress/
 Description: A plugin to connect to your Millbody transparent checkout
 Version: 1.1
 Author: @jaimeflneto
