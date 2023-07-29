@@ -23,3 +23,28 @@ window.getUrlParameter = function (sParam) {
     }
   });
 })();
+
+(function () {
+  var searchParams = new URLSearchParams(window.location.search);
+  if (
+    searchParams.size > 0 &&
+    window.location.href.indexOf("session_id=") > -1
+  ) {
+    var params = Object.fromEntries(searchParams);
+
+    window.dataLayer.push({
+      event: "purchase",
+      ecommerce: {
+        transaction_id: params.customer_e,
+        currency: "BRL",
+        payment_type: "Stripe",
+        value: params.value,
+      },
+      user: {
+        user_id: params.customer_e,
+        email: params.customer_e,
+        phone: params.customer_p,
+      },
+    });
+  }
+})();
