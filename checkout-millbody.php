@@ -3,12 +3,12 @@
 Plugin Name: Checkout Transparent Millbody
 Plugin URI: https://www.millbody.com/personal/wordpress/
 Description: A plugin to connect to your Millbody transparent checkout
-Version: 1.1
+Version: 1.2
 Author: @jaimeflneto
 Author URI: https://www.instagram.com/personal.millbody
 License: GPL2
 */
-$VERSION = '1.1';
+$VERSION = '1.2';
 function mbc_add_settings_page() {
   add_options_page( 'Millbody Settings', 'Millbody', 'manage_options', 'mbc-checkout-millbody-plugin', 'mbc_render_plugin_settings_page' );
 }

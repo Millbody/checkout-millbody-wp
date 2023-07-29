@@ -200,7 +200,7 @@ function dataLayerPaymentInfo() {
   dataLayer.push({
     event: "add_payment_info",
     ecommerce: {
-      currencyCode: "BRL",
+      currency: "BRL",
       payment_type: "Cartão de Crédito",
       value: checkout.plan.planValueNumber,
       items: [
@@ -227,7 +227,7 @@ function dataLayerPaymentInfo() {
       email: checkout.customer.email,
       first_name: checkout.customer.name,
       last_name: checkout.customer.last_name,
-      phone: "55" + checkout.customer.phone,
+      phone: "+55" + checkout.customer.phone,
     },
   });
 }
