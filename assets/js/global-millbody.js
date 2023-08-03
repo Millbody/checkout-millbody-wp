@@ -39,6 +39,22 @@ window.getUrlParameter = function (sParam) {
         currency: "BRL",
         payment_type: "Stripe",
         value: params.value,
+        items: [
+          {
+            id: params.plan,
+            price: params.value,
+            quantity: 1,
+            item_brand: "Millbody",
+          },
+        ],
+        products: [
+          {
+            id: params.plan,
+            price: params.value,
+            quantity: 1,
+            item_brand: "Millbody",
+          },
+        ],
       },
       user: {
         user_id: params.customer_e,

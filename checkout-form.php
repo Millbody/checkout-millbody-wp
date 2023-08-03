@@ -24,29 +24,29 @@
                           </div>
                       </div>
                       <div class="row">
-                          <div class="col s12">
-                              <label for="email">E-mail*</label>
-                              <input type="email" id="email" name="checkout[customer][email]" placeholder="Digite seu e-mail" required/>
-                              <small class="validation-message">Digite um email válido</small>
-                          </div>
                           <div class="col s6">
                               <label for="name">Nome*</label>
-                              <input type="text" id="name" name="checkout[customer][name]" placeholder="Digite seu nome" required/>
+                              <input tabindex="1" type="text" id="name" name="checkout[customer][name]" placeholder="Digite seu nome" required/>
                               <small class="validation-message">Você precisa preencher esse campo</small>
                           </div>
                           <div class="col s6">
                               <label for="last_name">Sobrenome*</label>
-                              <input type="text" id="last_name" name="checkout[customer][last_name]" placeholder="Digite seu sobrenome" required/>
+                              <input tabindex="2" type="text" id="last_name" name="checkout[customer][last_name]" placeholder="Digite seu sobrenome" required/>
                               <small class="validation-message">Você precisa preencher esse campo</small>
+                          </div>
+                          <div class="col s12">
+                              <label for="email">E-mail*</label>
+                              <input tabindex="3" type="email" id="email" name="checkout[customer][email]" placeholder="Digite seu e-mail" required/>
+                              <small class="validation-message">Digite um email válido</small>
                           </div>
                           <div class="col s6">
                               <label for="cpf">CPF*</label>
-                              <input type="tel" id="cpf" name="checkout[customer][cpf]" placeholder="Digite seu CPF" required/>
+                              <input  tabindex="4" type="tel" id="cpf" name="checkout[customer][cpf]" placeholder="Digite seu CPF" required/>
                               <small class="validation-message">Digite um CPF válido</small>
                           </div>
                           <div class="col s6">
                               <label for="phone">Telefone*</label>
-                              <input type="tel" id="phone" name="checkout[customer][phone]" placeholder="Digite seu telefone" required/>
+                              <input tabindex="5" type="tel" id="phone" name="checkout[customer][phone]" placeholder="Digite seu telefone" required/>
                               <small class="validation-message">Digite um telefone válido</small>
                           </div>
                       </div>
@@ -78,22 +78,22 @@
                           <div class="row">
                                 <div class="col s12">
                                   <label for="credit_card_number">Número do cartão de crédito</label>
-                                  <input type="tel" id="credit_card_number" placeholder="Número do cartão" name="checkout[payment][credit_card_number]" required/>
+                                  <input tabindex="6" type="tel" id="credit_card_number" placeholder="Número do cartão" name="checkout[payment][credit_card_number]" required/>
                                   <small class="validation-message">Digite um número de cartão válido</small>
                                 </div>
                                 <div class="col s12">
                                   <label for="credit_card_name">Nome no Cartão</label>
-                                  <input type="text" id="credit_card_name" placeholder="Nome no Cartão" name="checkout[payment][credit_card_name]" required/>
+                                  <input tabindex="7" type="text" id="credit_card_name" placeholder="Nome no Cartão" name="checkout[payment][credit_card_name]" required/>
                                   <small class="validation-message">Você precisa preencher esse campo</small>
                                 </div>
                                 <div class="col s8">
                                   <label for="expire_date">Data de Validade</label>
-                                  <input type="tel" id="expire_date" placeholder="Mês/Ano" name="checkout[payment][expire_date]" required/>
+                                  <input  tabindex="8" type="tel" id="expire_date" placeholder="Mês/Ano" name="checkout[payment][expire_date]" required/>
                                   <small class="validation-message">Você precisa preencher uma data válida</small>
                                 </div>
                                 <div class="col s4">
                                   <label for="cvv">CVV</label>
-                                  <input type="tel" id="cvv" placeholder="CVV" name="checkout[payment][cvv]" required/>
+                                  <input  tabindex="9" type="tel" id="cvv" placeholder="CVV" name="checkout[payment][cvv]" required/>
                                   <small class="validation-message">Você precisa preencher esse campo</small>
                                 </div>
                                 <div class="col s12">
@@ -167,5 +167,8 @@
 				</div>
 		</div>
 <script src="https://www.google.com/recaptcha/api.js?render=<?php echo $recaptcha_site_key ?>">
+  window.checkout_recaptcha = "<?php echo $recaptcha_site_key ?>"
+</script>
+<script>
   window.checkout_recaptcha = "<?php echo $recaptcha_site_key ?>"
 </script>

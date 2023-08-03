@@ -40,7 +40,7 @@ try {
       });
   });
 } catch (error) {
-  console.log("error ", error);
+  console.log("error grecaptcha ", error);
 }
 
 function getValFromId(idLabel) {
@@ -142,12 +142,15 @@ window.submitForm = function (event) {
       );
       return false;
     }
+    dataLayerPaymentInfo();
+
     fetch(checkoutUrl, {
       method: "POST",
       body: JSON.stringify(body),
       mode: "cors",
       headers: {
         "Content-Type": "application/json",
+        Requester: window.location.href,
       },
     })
       .then(function (response) {
@@ -163,7 +166,6 @@ window.submitForm = function (event) {
           window.hashInBase64 = CryptoJS.enc.Base64.stringify(hash);
           window.localStorage.removeItem("Customer");
           if (response.checkout_type == "redirect" && response.url) {
-            dataLayerPaymentInfo();
             window.location.href = response.url;
             return;
           } else {
@@ -176,7 +178,7 @@ window.submitForm = function (event) {
         if (redirect) {
           var redirectUrl = redirect;
           redirectUrl += "?plan_code=" + planCode;
-          redirectUrl += "&id=" + hashInBase64;
+          redirectUrl += "&id=" + window.hashInBase64;
           window.location.replace(redirectUrl);
         } else {
           successComponent.addClass("active");
@@ -197,7 +199,7 @@ window.submitForm = function (event) {
 };
 
 function dataLayerPaymentInfo() {
-  dataLayer.push({
+  window.dataLayer.push({
     event: "add_payment_info",
     ecommerce: {
       currency: "BRL",
@@ -223,7 +225,7 @@ function dataLayerPaymentInfo() {
       ],
     },
     user: {
-      user_id: hashInBase64,
+      user_id: window.hashInBase64,
       email: checkout.customer.email,
       first_name: checkout.customer.name,
       last_name: checkout.customer.last_name,
@@ -233,11 +235,15 @@ function dataLayerPaymentInfo() {
 }
 
 function dataLayerSuccess() {
-  dataLayer.push({
+  window.dataLayer.push({
     event: "purchase",
     ecommerce: {
-      transaction_id: hashInBase64,
-      affiliation: "Checkout Transparente " + window.location.host,
+      transaction_id: window.hashInBase64,
+      affiliation:
+        "Checkout Transparente " +
+        checkout.plan.store +
+        " " +
+        window.location.host,
       value: checkout.plan.planValueNumber,
       currency: "BRL",
       items: [
@@ -260,23 +266,23 @@ function dataLayerSuccess() {
       ],
     },
     user: {
-      user_id: hashInBase64,
+      user_id: window.hashInBase64,
       email: checkout.customer.email,
       first_name: checkout.customer.name,
       last_name: checkout.customer.last_name,
       phone: "+55" + checkout.customer.phone,
     },
   });
-  dataLayer.push({
+  window.dataLayer.push({
     event: "subscribe",
     subscription: {
-      subscription_id: hashInBase64,
+      subscription_id: window.hashInBase64,
       subscription_plan: planCode,
       currency: "BRL",
       value: checkout.plan.planValueNumber,
     },
     user: {
-      user_id: hashInBase64,
+      user_id: window.hashInBase64,
       email: checkout.customer.email,
       first_name: checkout.customer.name,
       last_name: checkout.customer.last_name,

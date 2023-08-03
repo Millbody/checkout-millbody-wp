@@ -95,6 +95,7 @@ function getCardFlag(cardnumber) {
 var myHeaders = new Headers({
   "Content-Type": "application/json",
   Accept: "application/json",
+  Requester: window.location.href,
 });
 
 window.addEventListener("DOMContentLoaded", function (event) {
@@ -223,7 +224,11 @@ window.addEventListener("DOMContentLoaded", function (event) {
               item_id: checkout.plan.code,
               item_brand: "Millbody",
               price: checkout.plan.value,
-              affiliation: "Checkout Transparente " + window.location.host,
+              affiliation:
+                "Checkout Transparente " +
+                checkout.plan.store +
+                " " +
+                window.location.host,
               quantity: 1,
             },
           ],
@@ -232,7 +237,11 @@ window.addEventListener("DOMContentLoaded", function (event) {
               name: checkout.plan.name,
               id: checkout.plan.code,
               price: checkout.plan.value,
-              affiliation: "Checkout Transparente " + window.location.host,
+              affiliation:
+                "Checkout Transparente " +
+                checkout.plan.store +
+                " " +
+                window.location.host,
               brand: "Millbody",
               quantity: 1,
             },
@@ -319,6 +328,10 @@ window.addEventListener("DOMContentLoaded", function (event) {
       checkout.plan = plan;
       checkout.plan.planValueNumber = planValueNumber;
       checkout.plan.planInstallments = planInstallments;
+      var planCover = document.querySelector("img#planCover, #planCover img");
+      if (plan.cover && planCover) {
+        planCover.src = plan.cover.uri;
+      }
 
       var customerStorage = localStorage.getItem("Customer");
       if (customerStorage && !user) {
@@ -399,7 +412,11 @@ window.addEventListener("DOMContentLoaded", function (event) {
                 item_id: checkout.plan.code,
                 item_brand: "Millbody",
                 price: checkout.plan.value,
-                affiliation: "Checkout Transparente " + window.location.host,
+                affiliation:
+                  "Checkout Transparente " +
+                  checkout.plan.store +
+                  " " +
+                  window.location.host,
                 quantity: 1,
               },
             ],
@@ -408,7 +425,11 @@ window.addEventListener("DOMContentLoaded", function (event) {
                 name: checkout.plan.name,
                 id: checkout.plan.code,
                 price: checkout.plan.value,
-                affiliation: "Checkout Transparente " + window.location.host,
+                affiliation:
+                  "Checkout Transparente " +
+                  checkout.plan.store +
+                  " " +
+                  window.location.host,
                 brand: "Millbody",
                 quantity: 1,
               },
