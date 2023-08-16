@@ -7,7 +7,7 @@
                     <div class="col s12 m8">
                       <div class="row">
                           <div class="col s12">
-                              <h3 class="step-title">Seus dados</h3>
+                              <h3 class="step-title">Você</h3>
                               <input type="hidden" id="plan_code" name="checkout[plan_code]" value="<?php echo $plan_code ?>">
                           </div>
                       </div>
@@ -75,7 +75,7 @@
                       </div>
                       <div class="row">
                         <div class="col s12 m8">
-                          <div class="row">
+                          <div class="row card-form">
                                 <div class="col s12">
                                   <label for="credit_card_number">Número do cartão de crédito</label>
                                   <input tabindex="6" type="tel" id="credit_card_number" placeholder="Número do cartão" name="checkout[payment][credit_card_number]" required/>

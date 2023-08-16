@@ -2647,7 +2647,7 @@ opacity: 0.7;
 .checkout label {
 	font-size: 0.9em;
 	font-weight: 300 !important;
-	color: #CCC !important;
+	color: #777 !important;
 }
 .right {
 	float: right !important;

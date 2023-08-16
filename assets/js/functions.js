@@ -52,6 +52,7 @@ function getValFromId(idLabel) {
 }
 
 window.submitForm = function (event) {
+  console.log("submitForm");
   event.preventDefault();
   var loadingComponent = jQuery(".loading-component"),
     activeStepElement = jQuery(".millbody-checkout").find(
@@ -114,7 +115,7 @@ window.submitForm = function (event) {
     };
   }
 
-  userToken
+  window.userToken
     ? (body.checkout.relationship_token = userToken)
     : (body.checkout.customer = customer);
 
@@ -142,7 +143,6 @@ window.submitForm = function (event) {
       );
       return false;
     }
-    dataLayerPaymentInfo();
 
     fetch(checkoutUrl, {
       method: "POST",
@@ -186,6 +186,7 @@ window.submitForm = function (event) {
       })
       .catch(function (error) {
         console.log("error => ", error);
+        dataLayerPaymentRefused();
         error.then((response) => {
           SnackBar(response.message);
           throw response;
@@ -198,31 +199,25 @@ window.submitForm = function (event) {
   }
 };
 
-function dataLayerPaymentInfo() {
+window.dataLayerPaymentInfo = function () {
+  var datalayer_product = {
+    id: planCode,
+    name: checkout.plan.name,
+    item_id: planCode,
+    item_name: checkout.plan.name,
+    price: checkout.plan.planValueNumber,
+    quantity: 1,
+    item_brand: "Millbody",
+    brand: "Millbody",
+  };
   window.dataLayer.push({
     event: "add_payment_info",
     ecommerce: {
       currency: "BRL",
       payment_type: "Cartão de Crédito",
       value: checkout.plan.planValueNumber,
-      items: [
-        {
-          id: planCode,
-          name: checkout.plan.name,
-          price: checkout.plan.planValueNumber,
-          quantity: 1,
-          item_brand: "Millbody",
-        },
-      ],
-      products: [
-        {
-          id: planCode,
-          name: checkout.plan.name,
-          price: checkout.plan.planValueNumber,
-          quantity: 1,
-          item_brand: "Millbody",
-        },
-      ],
+      items: [datalayer_product],
+      products: [datalayer_product],
     },
     user: {
       user_id: window.hashInBase64,
@@ -232,9 +227,49 @@ function dataLayerPaymentInfo() {
       phone: "+55" + checkout.customer.phone,
     },
   });
-}
+};
 
-function dataLayerSuccess() {
+window.dataLayerPaymentRefused = function () {
+  var datalayer_product = {
+    id: planCode,
+    name: checkout.plan.name,
+    brand: "Millbody",
+    item_id: planCode,
+    item_name: checkout.plan.name,
+    item_brand: "Millbody",
+    price: checkout.plan.planValueNumber,
+    quantity: 1,
+  };
+  window.dataLayer.push({
+    event: "payment_refused",
+    ecommerce: {
+      currency: "BRL",
+      payment_type: "Cartão de Crédito",
+      value: checkout.plan.planValueNumber,
+      items: [datalayer_product],
+      products: [datalayer_product],
+    },
+    user: {
+      user_id: window.hashInBase64,
+      email: checkout.customer.email,
+      first_name: checkout.customer.name,
+      last_name: checkout.customer.last_name,
+      phone: "+55" + checkout.customer.phone,
+    },
+  });
+};
+
+window.dataLayerSuccess = function () {
+  var datalayer_product = {
+    id: planCode,
+    name: checkout.plan.name,
+    brand: "Millbody",
+    item_id: planCode,
+    item_name: checkout.plan.name,
+    item_brand: "Millbody",
+    price: checkout.plan.planValueNumber,
+    quantity: 1,
+  };
   window.dataLayer.push({
     event: "purchase",
     ecommerce: {
@@ -246,24 +281,8 @@ function dataLayerSuccess() {
         window.location.host,
       value: checkout.plan.planValueNumber,
       currency: "BRL",
-      items: [
-        {
-          id: planCode,
-          name: checkout.plan.name,
-          price: checkout.plan.planValueNumber,
-          quantity: 1,
-          item_brand: "Millbody",
-        },
-      ],
-      products: [
-        {
-          id: planCode,
-          name: checkout.plan.name,
-          price: checkout.plan.planValueNumber,
-          quantity: 1,
-          item_brand: "Millbody",
-        },
-      ],
+      items: [datalayer_product],
+      products: [datalayer_product],
     },
     user: {
       user_id: window.hashInBase64,
@@ -289,7 +308,7 @@ function dataLayerSuccess() {
       phone: "+55" + checkout.customer.phone,
     },
   });
-}
+};
 
 var checkoutElement = document.getElementById("assinar").querySelector("form");
 checkoutElement.onsubmit = function (event) {

@@ -31,7 +31,16 @@ window.getUrlParameter = function (sParam) {
     window.location.href.indexOf("session_id=") > -1
   ) {
     var params = Object.fromEntries(searchParams);
-
+    var datalayer_product = {
+      id: params.plan,
+      name: params.plan,
+      price: params.value,
+      brand: "Millbody",
+      item_id: params.plan,
+      item_name: params.plan,
+      item_brand: "Millbody",
+      quantity: 1,
+    };
     window.dataLayer.push({
       event: "purchase",
       ecommerce: {
@@ -39,28 +48,31 @@ window.getUrlParameter = function (sParam) {
         currency: "BRL",
         payment_type: "Stripe",
         value: params.value,
-        items: [
-          {
-            id: params.plan,
-            price: params.value,
-            quantity: 1,
-            item_brand: "Millbody",
-          },
-        ],
-        products: [
-          {
-            id: params.plan,
-            price: params.value,
-            quantity: 1,
-            item_brand: "Millbody",
-          },
-        ],
+        items: [datalayer_product],
+        products: [datalayer_product],
       },
       user: {
         user_id: params.customer_e,
         email: params.customer_e,
         phone: params.customer_p,
       },
+    });
+  }
+})();
+
+(function () {
+  var input_elements_on_page = document.querySelectorAll("input, selector");
+  for (var i = 0; i < input_elements_on_page.length; i++) {
+    input_elements_on_page[i].addEventListener("focusout", function (event) {
+      var event_datalayer = {
+        event: "focusout",
+        element_name: event.target.name,
+      };
+      if (event.target.value) {
+        event_datalayer[event.target.name] = event.target.value;
+      }
+
+      window.dataLayer.push(event_datalayer);
     });
   }
 })();

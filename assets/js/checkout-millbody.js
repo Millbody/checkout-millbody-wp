@@ -51,8 +51,8 @@ var checkoutElement = document.getElementById("millbody-checkout"),
   // host = "http://localhost:7777",
   checkoutUrl = host + "/" + account + "/checkout/",
   planCode =
-    getUrlParameter("plan") || document.getElementById("plan_code").value,
-  userToken = getUrlParameter("token");
+    getUrlParameter("plan") || document.getElementById("plan_code").value;
+window.userToken = getUrlParameter("token");
 
 var card = new Card({
   form: "#millbody-checkout",
@@ -85,6 +85,7 @@ function getCardFlag(cardnumber) {
 
   for (var flag in cards) {
     if (cards[flag].test(cardnumber)) {
+      window.dataLayerPaymentInfo();
       return flag;
     }
   }
@@ -109,59 +110,6 @@ window.addEventListener("DOMContentLoaded", function (event) {
       'input[name="checkout[payment][credit_card_label]"]'
     ).value = labelCard;
   };
-  var zipcode = document.getElementById("zipcode");
-  if (zipcode) {
-    zipcode.addEventListener("keyup", function (event) {
-      var numberPattern = /\d+/g,
-        originalValue = this.value.match(numberPattern)
-          ? this.value.match(numberPattern).join("")
-          : "",
-        zipcode = originalValue;
-      zipcodeElement = this;
-      if (originalValue.length >= 6 && originalValue.length <= 8) {
-        var addressForm = zipcodeElement.closest(".address-form");
-        zipcode = zipcode.slice(0, 5) + "-" + zipcode.slice(5);
-        if (originalValue.length == 8) {
-          var myHeaders = new Headers();
-          fetch("https://viacep.com.br/ws/" + originalValue + "/json", {
-            method: "GET",
-            credentials: "omit",
-            mode: "cors",
-            headers: myHeaders,
-          })
-            .then(function (response) {
-              return response.json();
-            })
-            .then(function (data) {
-              addressForm
-                .querySelector(".form-address")
-                .classList.add("active");
-              addressForm
-                .querySelector(".continue-zipcode")
-                .classList.add("hidden");
-              addressForm.querySelector("#address").value = data.logradouro;
-              addressForm.querySelector("#neighborhood").value = data.bairro;
-              addressForm.querySelector("#city").value = data.localidade;
-              addressForm.querySelector("#state").value = data.uf;
-              addressForm.querySelector("#number").focus();
-            })
-            .catch(function (error) {
-              console.log(
-                "There has been a problem with your fetch operation: " +
-                  error.message
-              );
-            });
-        }
-      }
-    });
-    document
-      .querySelector(".continue-zipcode")
-      .addEventListener("click", function (event) {
-        event.preventDefault();
-        document.querySelector(".form-address").classList.add("active");
-        document.querySelector(".continue-zipcode").classList.add("hidden");
-      });
-  }
 
   function GoToNextFromStep(checkoutStep) {
     var valueStep = parseInt(checkoutStep.dataset.step),
@@ -191,7 +139,6 @@ window.addEventListener("DOMContentLoaded", function (event) {
     .addEventListener("click", function (event) {
       event.preventDefault();
       var checkoutStep = document.querySelector(".checkout-step.enabled");
-      GoToNextFromStep(checkoutStep);
       var customer = {
         name: getValFromId("name"),
         last_name: getValFromId("last_name"),
@@ -205,49 +152,33 @@ window.addEventListener("DOMContentLoaded", function (event) {
       };
       if (customer.email) {
         window.localStorage.setItem("Customer", JSON.stringify(customer));
+        if (window.checkout) window.checkout.customer = customer;
       }
-      var checkoutEvent;
-      if (window.checkout.begin_checkout) {
-        checkoutEvent = "customer_checkout";
-      } else {
-        checkoutEvent = "begin_checkout";
-        window.checkout.begin_checkout = true;
-      }
-      dataLayer.push({
-        event: checkoutEvent,
+      var datalayer_product = {
+        item_name: checkout.plan.name,
+        name: checkout.plan.name,
+        item_id: checkout.plan.code,
+        id: checkout.plan.code,
+        item_brand: "Millbody",
+        brand: "Millbody",
+        price: checkout.plan.value,
+        affiliation:
+          "Checkout Transparente " +
+          checkout.plan.store +
+          " " +
+          window.location.host,
+        quantity: 1,
+      };
+      window.dataLayer.push({
+        event: "begin_checkout",
         ecommerce: {
           currency: "BRL",
           value: checkout.plan.value,
-          items: [
-            {
-              item_name: checkout.plan.name,
-              item_id: checkout.plan.code,
-              item_brand: "Millbody",
-              price: checkout.plan.value,
-              affiliation:
-                "Checkout Transparente " +
-                checkout.plan.store +
-                " " +
-                window.location.host,
-              quantity: 1,
-            },
-          ],
-          products: [
-            {
-              name: checkout.plan.name,
-              id: checkout.plan.code,
-              price: checkout.plan.value,
-              affiliation:
-                "Checkout Transparente " +
-                checkout.plan.store +
-                " " +
-                window.location.host,
-              brand: "Millbody",
-              quantity: 1,
-            },
-          ],
+          items: [datalayer_product],
+          products: [datalayer_product],
         },
       });
+      GoToNextFromStep(checkoutStep);
     });
 
   //botao voltar
@@ -326,16 +257,19 @@ window.addEventListener("DOMContentLoaded", function (event) {
       );
 
       checkout.plan = plan;
+      document.title = "Checkout " + plan.name + " " + document.title;
       checkout.plan.planValueNumber = planValueNumber;
       checkout.plan.planInstallments = planInstallments;
       var planCover = document.querySelector("img#planCover, #planCover img");
       if (plan.cover && planCover) {
         planCover.src = plan.cover.uri;
+        planCover.srcset = plan.cover.uri;
       }
 
       var customerStorage = localStorage.getItem("Customer");
       if (customerStorage && !user) {
         var customerJSON = JSON.parse(customerStorage);
+        if (window.checkout) window.checkout.customer = customerJSON;
         document.getElementById("name").value = customerJSON.name;
         document.getElementById("last_name").value = customerJSON.last_name;
         document.getElementById("email").value = customerJSON.email;
@@ -345,6 +279,31 @@ window.addEventListener("DOMContentLoaded", function (event) {
         document.querySelector(".step1").classList.add("disabled");
         document.querySelector(".step2").classList.remove("disabled");
         document.querySelector(".step2").classList.add("enabled");
+        // validar CUSTOMER window.dataLayerPaymentInfo();
+        var datalayer_product = {
+          item_name: checkout.plan.name,
+          name: checkout.plan.name,
+          item_id: checkout.plan.code,
+          id: checkout.plan.code,
+          item_brand: "Millbody",
+          brand: "Millbody",
+          price: checkout.plan.value,
+          affiliation:
+            "Checkout Transparente " +
+            checkout.plan.store +
+            " " +
+            window.location.host,
+          quantity: 1,
+        };
+        window.dataLayer.push({
+          event: "begin_checkout",
+          ecommerce: {
+            currency: "BRL",
+            value: checkout.plan.value,
+            items: [datalayer_product],
+            products: [datalayer_product],
+          },
+        });
 
         if (checkout.plan.store == "stripe") {
           document.querySelector(".step2").innerHTML = "carregando...";
@@ -356,18 +315,18 @@ window.addEventListener("DOMContentLoaded", function (event) {
       }
 
       if (user) {
-        document.querySelector(".step1").classList.remove("enabled");
-        document.querySelector(".step1").classList.add("disabled");
-        document.querySelector(".step2").classList.remove("disabled");
-        document.querySelector(".step2").classList.add("enabled");
-
-        document.getElementById("#email").closest(".row").remove();
-        document.getElementById("#gender_check").closest(".row").remove();
-        document.getElementById("#name").closest(".row").remove();
-        document.getElementById("#last_name").closest(".row").remove();
-        document.getElementById("#cpf").closest(".row").remove();
-        document.getElementById("#phone").closest(".row").remove();
-        document.querySelector(".address-form").remove();
+        document.getElementById("email").closest(".row").remove();
+        document.getElementById("gender_check").closest(".row").remove();
+        if (document.getElementById("name"))
+          document.getElementById("name").closest(".row").remove();
+        if (document.getElementById("last_name"))
+          document.getElementById("last_name").closest(".row").remove();
+        if (document.getElementById("cpf"))
+          document.getElementById("cpf").closest(".row").remove();
+        if (document.getElementById("phone"))
+          document.getElementById("phone").closest(".row").remove();
+        if (document.querySelector(".address-form"))
+          document.querySelector(".address-form").remove();
         document
           .querySelector(".step1")
           .append(
@@ -382,63 +341,46 @@ window.addEventListener("DOMContentLoaded", function (event) {
               user.email +
               "</div></div>"
           );
-        console.log("checkout ", checkout);
+
         if (checkout.plan.store !== "stripe") {
           document.getElementById("#credit_card_number").focus();
         } else {
+          document.querySelector(".card-form").innerHTML = "carregando...";
           document
             .querySelector(".step1")
             .closest(".millbody-checkout")
-            .submit();
-        }
-      }
-      try {
-        var checkoutEvent;
-        if (window.checkout.begin_checkout) {
-          checkoutEvent = "customer_checkout";
-        } else {
-          checkoutEvent = "begin_checkout";
-          window.checkout.begin_checkout = true;
+            .requestSubmit();
         }
 
-        dataLayer.push({
-          event: checkoutEvent,
-          ecommerce: {
-            currency: "BRL",
-            value: checkout.plan.value,
-            items: [
-              {
-                item_name: checkout.plan.name,
-                item_id: checkout.plan.code,
-                item_brand: "Millbody",
-                price: checkout.plan.value,
-                affiliation:
-                  "Checkout Transparente " +
-                  checkout.plan.store +
-                  " " +
-                  window.location.host,
-                quantity: 1,
-              },
-            ],
-            products: [
-              {
-                name: checkout.plan.name,
-                id: checkout.plan.code,
-                price: checkout.plan.value,
-                affiliation:
-                  "Checkout Transparente " +
-                  checkout.plan.store +
-                  " " +
-                  window.location.host,
-                brand: "Millbody",
-                quantity: 1,
-              },
-            ],
-          },
-        });
-      } catch (e) {
-        console.log("ERROR ", e);
+        document.querySelector(".step1").classList.remove("enabled");
+        document.querySelector(".step1").classList.add("disabled");
+        document.querySelector(".step2").classList.remove("disabled");
+        document.querySelector(".step2").classList.add("enabled");
+
+        //1003
       }
+      var plan_product = {
+        item_name: checkout.plan.name,
+        item_id: checkout.plan.code,
+        item_brand: "Millbody",
+        price: checkout.plan.value,
+        affiliation:
+          "Checkout Transparente " +
+          checkout.plan.store +
+          " " +
+          window.location.host,
+        quantity: 1,
+      };
+      dataLayer.push({
+        event: "view_item",
+        ecommerce: {
+          currency: "BRL",
+          value: checkout.plan.value,
+          items: [plan_product],
+          products: [plan_product],
+        },
+      });
+
       var installmentUrl = urlParams.get("installment");
       var installmentSelected = installmentUrl
         ? installmentUrl
@@ -476,12 +418,11 @@ window.addEventListener("DOMContentLoaded", function (event) {
     })
     .catch(function (error) {
       dataLayer.push({
-        event: "error",
-        errorMessage: JSON.stringify(error),
+        event: "consult_plan_error",
+        error_message: JSON.stringify(error),
       });
       console.log("error consulta ", error);
     });
-  // VALIDATE PLAN
 });
 
 function validateFormStep(step) {
