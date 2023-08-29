@@ -52,7 +52,6 @@ function getValFromId(idLabel) {
 }
 
 window.submitForm = function (event) {
-  console.log("submitForm");
   event.preventDefault();
   var loadingComponent = jQuery(".loading-component"),
     activeStepElement = jQuery(".millbody-checkout").find(

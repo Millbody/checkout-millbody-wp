@@ -329,21 +329,54 @@ window.addEventListener("DOMContentLoaded", function (event) {
           document.querySelector(".address-form").remove();
         document
           .querySelector(".step1")
-          .append(
+          .insertAdjacentHTML(
+            "beforeend",
             '<div class="row"><div class="col s12">' +
               user.name +
               "</div></div>"
           );
         document
           .querySelector(".step1")
-          .append(
+          .insertAdjacentHTML(
+            "beforeend",
             '<div class="row"><div class="col s12">' +
               user.email +
               "</div></div>"
           );
 
+        document.querySelector(".step1").classList.remove("enabled");
+        document.querySelector(".step1").classList.add("disabled");
+        document.querySelector(".step2").classList.remove("disabled");
+        document.querySelector(".step2").classList.add("enabled");
+
+        // validar CUSTOMER window.dataLayerPaymentInfo();
+        var datalayer_product = {
+          item_name: checkout.plan.name,
+          name: checkout.plan.name,
+          item_id: checkout.plan.code,
+          id: checkout.plan.code,
+          item_brand: "Millbody",
+          brand: "Millbody",
+          price: checkout.plan.value,
+          affiliation:
+            "Checkout Transparente " +
+            checkout.plan.store +
+            " " +
+            window.location.host,
+          quantity: 1,
+        };
+        window.dataLayer.push({
+          event: "begin_checkout",
+          ecommerce: {
+            currency: "BRL",
+            value: checkout.plan.value,
+            items: [datalayer_product],
+            products: [datalayer_product],
+          },
+        });
+
         if (checkout.plan.store !== "stripe") {
-          document.getElementById("#credit_card_number").focus();
+          document.getElementById("credit_card_number").focus();
         } else {
           document.querySelector(".card-form").innerHTML = "carregando...";
           document
@@ -351,13 +384,6 @@ window.addEventListener("DOMContentLoaded", function (event) {
             .closest(".millbody-checkout")
             .requestSubmit();
         }
-
-        document.querySelector(".step1").classList.remove("enabled");
-        document.querySelector(".step1").classList.add("disabled");
-        document.querySelector(".step2").classList.remove("disabled");
-        document.querySelector(".step2").classList.add("enabled");
-
-        //1003
       }
       var plan_product = {
         item_name: checkout.plan.name,
